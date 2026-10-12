@@ -1,4 +1,3 @@
-```markdown
 # SQL Security Queries: Investigating Logs and Asset Management
 
 ## Objective
@@ -29,17 +28,42 @@ Security incident investigations require analyzing millions of log entries quick
 ### 1. Hardware & OS Compliance Auditing
 Identify workstations running legacy operating systems to verify configuration baselines and patch management:
 
-```sql
--- Retrieve device identifiers and assigned operating systems
-SELECT device_id, operating_system 
-FROM machines;
+* Retrieve device identifiers and assigned operating systems:
+  `SELECT device_id, operating_system FROM machines;`
 
--- Filter for all machines running Linux
-SELECT * 
-FROM machines 
-WHERE operating_system = 'Linux';
+* Filter for all machines running Linux:
+  `SELECT * FROM machines WHERE operating_system = 'Linux';`
 
--- Identify systems requiring OS X baseline security updates
-SELECT * 
-FROM machines 
-WHERE operating_system = 'OS X';
+* Identify systems requiring OS X baseline security updates:
+  `SELECT * FROM machines WHERE operating_system = 'OS X';`
+
+### 2. Personnel & Device Access Auditing
+Audit device assignments to detect unauthorized hardware and isolate staff by department:
+
+* Isolate personnel within the Marketing department:
+  `SELECT * FROM employees WHERE department = 'Marketing';`
+
+* Cross-department audit (Marketing and Finance):
+  `SELECT * FROM employees WHERE department = 'Marketing' OR department = 'Finance';`
+
+* Trace specific machine allocations back to employees:
+  `SELECT * FROM employees WHERE device_id = 'device_01' OR device_id = 'device_02';`
+
+### 3. Authentication & Incident Triage
+Investigate authentication attempts to uncover brute-force attacks and establish incident timelines:
+
+* Surface all failed authentication events (success = 0):
+  `SELECT * FROM log_in_attempts WHERE success = 0;`
+
+* Filter authentication activity on a target incident date:
+  `SELECT * FROM log_in_attempts WHERE login_date = '2022-05-09';`
+
+* Reconstruct recent timeline by returning the 5 latest attempts:
+  `SELECT * FROM log_in_attempts ORDER BY login_time DESC LIMIT 5;`
+
+---
+
+## Key Security Takeaways
+* **Principle of Least Privilege:** Departmental queries allow auditing user roles to verify access grants match actual job duties.
+* **Incident Reconstruction:** Chronological sorting (`ORDER BY login_time DESC`) enables analysts to build timelines around initial compromise vectors.
+* **Asset Integrity:** Mapping employees to device IDs prevents unmonitored shadow IT from connecting to the internal corporate network.
